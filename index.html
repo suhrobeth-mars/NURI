@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NURI - Multimedia Self-Regulation</title>
+    <title>NURI - Instant Self-Regulation</title>
     
-    <!-- Скрытая защита: запрет индексации поисковиками -->
+    <!-- ЗАЩИТА: Запрет индексации поисковиками -->
     <meta name="robots" content="noindex, nofollow">
     
-    <!-- 1. GOOGLE ANALYTICS 4 (GA4) -->
+    <!-- 1. GOOGLE ANALYTICS 4 (GA4) - ID: G-331Z9YR18C -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-331Z9YR18C"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -35,32 +35,8 @@
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
-        /* Анимации для визуального сопровождения */
-        @keyframes breathe {
-            0%, 100% { transform: scale(1); opacity: 0.3; background-color: #e0e7ff; }
-            50% { transform: scale(1.6); opacity: 1; background-color: #818cf8; }
-        }
-        .animate-breathe { animation: breathe 8s ease-in-out infinite; }
-
-        @keyframes vibration {
-            0% { transform: translate(0, 0); }
-            25% { transform: translate(2px, -2px); }
-            50% { transform: translate(-2px, 2px); }
-            100% { transform: translate(0, 0); }
-        }
-        .animate-vibration { animation: vibration 0.1s linear infinite; }
-
-        @keyframes pulse-ring {
-            0% { transform: scale(0.8); opacity: 0.5; }
-            100% { transform: scale(1.5); opacity: 0; }
-        }
-        .animate-pulse-ring { animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-
-        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        /* Статичные стили без анимаций */
+        .fade-in { opacity: 1; } 
 
         .nuri-card-shadow {
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
@@ -86,9 +62,9 @@
 
         // --- БАЗА ДАННЫХ ПРАКТИК ---
         const TOOLS = [
-            { id: 1, title: "Square Breathing", category: "breath", route_tags: ["panic", "anxiety", "stress"], why_it_helps: "Slows heart rate and anchors the mind.", steps: ["Inhale for 4s", "Hold for 4s", "Exhale for 4s", "Hold for 4s"], safety: "Stop if dizzy.", animation: "breathe" },
-            { id: 4, title: "Body Shaking", category: "movement", route_tags: ["stress", "anxiety", "body"], why_it_helps: "Discharges adrenaline physically.", steps: ["Stand up", "Shake wrists", "Shake shoulders", "Vibrate whole body"], safety: "Keep joints soft.", animation: "vibrate" },
-            { id: 8, title: "5-4-3-2-1 Grounding", category: "sensory", route_tags: ["panic", "derealization", "unknown"], why_it_helps: "Brings focus to external reality.", steps: ["5 things you see", "4 hear", "3 touch", "2 smell", "1 taste"], safety: "Focus on neutral objects.", animation: "pulse" }
+            { id: 1, title: "Square Breathing", category: "breath", route_tags: ["panic", "anxiety", "stress"], why_it_helps: "Slows heart rate and anchors the mind.", steps: ["Inhale for 4s", "Hold for 4s", "Exhale for 4s", "Hold for 4s"], safety: "Stop if dizzy." },
+            { id: 4, title: "Body Shaking", category: "movement", route_tags: ["stress", "anxiety", "body"], why_it_helps: "Discharges adrenaline physically.", steps: ["Stand up", "Shake wrists", "Shake shoulders", "Vibrate whole body"], safety: "Keep joints soft." },
+            { id: 8, title: "5-4-3-2-1 Grounding", category: "sensory", route_tags: ["panic", "derealization", "unknown"], why_it_helps: "Brings focus to external reality.", steps: ["5 things you see", "4 hear", "3 touch", "2 smell", "1 taste"], safety: "Focus on neutral objects." }
         ];
 
         const CATEGORIES = {
@@ -104,42 +80,20 @@
             return <i data-lucide={name.toLowerCase()} style={{ width: size, height: size }} className={className}></i>;
         };
 
-        const MultimediaAid = ({ type, colorClass }) => {
-            if (type === 'breathe') return <div className="relative w-40 h-40 mx-auto flex items-center justify-center my-8"><div className="absolute w-24 h-24 rounded-full animate-breathe opacity-50"></div><div className={`w-12 h-12 rounded-full z-10 shadow-lg ${colorClass}`}></div></div>;
-            if (type === 'vibrate') return <div className="w-40 h-40 mx-auto flex items-center justify-center my-8"><div className={`w-24 h-24 rounded-3xl animate-vibration flex items-center justify-center text-white shadow-xl ${colorClass}`}><Icon name="Zap" size={40} /></div></div>;
-            if (type === 'pulse') return <div className="relative w-40 h-40 mx-auto flex items-center justify-center my-8"><div className={`absolute w-24 h-24 rounded-full animate-pulse-ring border-4 ${colorClass.replace('bg-', 'border-')}`}></div><div className={`w-20 h-20 rounded-full flex items-center justify-center text-white shadow-lg ${colorClass}`}><Icon name="Eye" size={32} /></div></div>;
-            return null;
-        };
-
         function App() {
             const [view, setView] = useState('landing'); 
             const [selections, setSelections] = useState({ route: null, branch: null, step: 0 });
             const [selectedTool, setSelectedTool] = useState(null);
-            const [isSpeaking, setIsSpeaking] = useState(false);
             const [toolkitFilter, setToolkitFilter] = useState('all');
 
             const theme = selections.branch === 'A' ? { color: 'bg-rose-600', text: 'text-rose-600', light: 'bg-rose-50' } :
                          selections.branch === 'C' ? { color: 'bg-teal-600', text: 'text-teal-600', light: 'bg-teal-50' } :
                          { color: 'bg-indigo-600', text: 'text-indigo-600', light: 'bg-indigo-50' };
 
-            const handleVoiceToggle = () => {
-                if (isSpeaking) {
-                    window.speechSynthesis.cancel();
-                    setIsSpeaking(false);
-                    trackEvent('voice_stop', selectedTool.title);
-                } else {
-                    const msg = new SpeechSynthesisUtterance(`${selectedTool.title}. ${selectedTool.steps.join(". ")}`);
-                    msg.onend = () => setIsSpeaking(false);
-                    window.speechSynthesis.speak(msg);
-                    setIsSpeaking(true);
-                    trackEvent('voice_start', selectedTool.title);
-                }
-            };
-
             const Layout = ({ children, title, subtitle, onBack }) => (
-                <div className={`min-h-screen flex flex-col items-center p-6 md:p-12 fade-in transition-colors duration-700 ${view !== 'landing' ? theme.light : 'bg-slate-50'}`}>
+                <div className={`min-h-screen flex flex-col items-center p-6 md:p-12 transition-colors duration-700 ${view !== 'landing' ? theme.light : 'bg-slate-50'}`}>
                     <div className="w-full max-w-xl flex flex-col gap-8">
-                        {onBack && <button onClick={() => { window.speechSynthesis.cancel(); setIsSpeaking(false); onBack(); }} className="text-slate-400 hover:text-slate-900 flex items-center gap-2 transition w-fit group"><Icon name="ArrowLeft" size={20} className="mr-2" /> <span className="font-bold uppercase text-[10px] tracking-widest leading-none">Back</span></button>}
+                        {onBack && <button onClick={onBack} className="text-slate-400 hover:text-slate-900 flex items-center gap-2 transition w-fit group"><Icon name="ArrowLeft" size={20} className="mr-2" /> <span className="font-bold uppercase text-[10px] tracking-widest leading-none">Back</span></button>}
                         <div className="text-center">
                             <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-slate-900 mb-2 leading-none">{title}</h1>
                             <p className="text-slate-500 text-lg font-medium">{subtitle}</p>
@@ -154,7 +108,7 @@
 
             if (view === 'landing') return (
                 <div className="min-h-screen flex items-center justify-center p-8 bg-white text-center">
-                    <div className="max-w-md w-full fade-in">
+                    <div className="max-w-md w-full">
                         <div className="mb-10 inline-flex p-8 bg-slate-900 text-white rounded-[3rem] shadow-xl"><Icon name="Zap" size={48} /></div>
                         <h1 className="text-7xl font-black tracking-tighter text-slate-900 leading-none mb-4">NURI</h1>
                         <p className="text-slate-500 text-xl mb-12 font-medium">Instant Sensory Regulation.</p>
@@ -220,9 +174,9 @@
                         </div>
                         <div className="grid gap-4">
                             {toolkitTools.map(t => (
-                                <div key={t.id} onClick={() => { setSelectedTool(t); setView('tool'); trackEvent('open_tool', t.title); }} className="bg-white p-7 rounded-[2.5rem] border border-slate-100 nuri-card-shadow flex justify-between items-center cursor-pointer hover:border-slate-900 transition-all group">
+                                <div key={t.id} onClick={() => { setSelectedTool(t); setView('tool'); trackEvent('open_tool', t.title); }} className="bg-white p-7 rounded-[2.5rem] border border-slate-100 nuri-card-shadow flex justify-between items-center cursor-pointer hover:border-slate-900 transition-all">
                                     <h3 className="text-xl font-bold text-slate-900 leading-tight">{t.title}</h3>
-                                    <Icon name="ArrowRight" size={20} className="text-slate-300 group-hover:text-slate-900" />
+                                    <Icon name="ArrowRight" size={20} className="text-slate-300" />
                                 </div>
                             ))}
                         </div>
@@ -231,16 +185,28 @@
             }
 
             if (view === 'tool' && selectedTool) return (
-                <Layout title={selectedTool.title} subtitle="Multimedia Guide" onBack={() => { window.speechSynthesis.cancel(); setIsSpeaking(false); setView('landing'); }}>
-                    <div className="bg-white p-10 md:p-14 rounded-[4rem] border border-slate-100 shadow-2xl space-y-10">
-                        <MultimediaAid type={selectedTool.animation} colorClass={theme.color} />
-                        <button onClick={handleVoiceToggle} className={`w-full py-4 rounded-xl border-2 flex items-center justify-center gap-3 font-bold transition-all ${isSpeaking ? 'bg-slate-900 text-white' : 'text-slate-600 border-slate-100 hover:bg-slate-50'}`}>
-                            <Icon name={isSpeaking ? "Square" : "PlayCircle"} /> {isSpeaking ? "Stop Guide" : "Play Voice Guide"}
-                        </button>
+                <Layout title={selectedTool.title} subtitle="Text Guide" onBack={() => { setView('landing'); }}>
+                    <div className="bg-white p-10 md:p-14 rounded-[4rem] border border-slate-50 shadow-2xl space-y-10">
+                        {/* Чисто текстовые шаги без мультимедиа */}
                         <div className="space-y-8 text-left">
-                            {selectedTool.steps.map((s, i) => <div key={i} className="flex gap-6 items-start fade-in"><div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 font-black text-2xl shadow-sm bg-slate-100 ${theme.text}`}>{i + 1}</div><p className="text-xl md:text-2xl text-slate-800 font-bold leading-tight pt-1">{s}</p></div>)}
+                            {selectedTool.steps.map((s, i) => (
+                                <div key={i} className="flex gap-6 items-start">
+                                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 font-black text-2xl shadow-sm bg-slate-100 ${theme.text}`}>
+                                        {i + 1}
+                                    </div>
+                                    <p className="text-xl md:text-2xl text-slate-800 font-bold leading-tight pt-1">{s}</p>
+                                </div>
+                            ))}
                         </div>
-                        <button onClick={() => { trackEvent('finish_practice', selectedTool.title); setView('landing'); }} className={`w-full py-6 rounded-[2.5rem] font-black text-xl shadow-xl text-white active:scale-95 transition-transform ${theme.color}`}>Finish</button>
+
+                        <div className="pt-8 border-t border-slate-100 flex items-start gap-4 text-left">
+                            <Icon name="ShieldAlert" size={24} className="text-amber-500 shrink-0 mt-1" />
+                            <p className="text-xs text-slate-400 font-bold uppercase tracking-widest leading-relaxed">Safety: {selectedTool.safety}</p>
+                        </div>
+                        
+                        <button onClick={() => { trackEvent('finish_practice', selectedTool.title); setView('landing'); }} className={`w-full py-6 rounded-[2.5rem] font-black text-xl shadow-xl active:scale-95 transition-transform text-white ${theme.color}`}>
+                            Finish Practice
+                        </button>
                     </div>
                 </Layout>
             );
